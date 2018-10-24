@@ -1,1 +1,1 @@
-# ee126project
+# EE126 Project
