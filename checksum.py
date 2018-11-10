@@ -1,20 +1,26 @@
 import numpy as np
 
 class Packet:
-    def __init__(self, input):
+    def __init__(self, input, sent = False):
         '''
         input = String input of bits, length 128 + 32 representing xor of packets
             - Last 32 bits corresponds to the metadata
 
         '''
-        self.chunk_size = 16
-        self.data = [input[16*i:16*(i+1)] for i in range(128//16)] #128 Bits
-        self.meta_data = input[128:] #32 Bits
-        self.total_data = list(self.data)
-        total_data.append(meta_data[:16])
-        total_data.append(meta_data[16:])
-        self.checksum = self.get_checksum() #16 bits
-
+        if not sent:
+            self.chunk_size = 16
+            self.data = [input[16*i:16*(i+1)] for i in range(128//16)] #128 Bits
+            self.meta_data = input[128:] #32 Bits
+            self.total_data = list(self.data)
+            total_data.append(meta_data[:16])
+            total_data.append(meta_data[16:])
+            self.checksum = self.get_checksum() #16 bits
+        else:
+            self.checksum = input[:16]
+            self.data = [input[16*(i+1): 16*(i+2)] for i in range(128//16)]
+            self.total_data = list(self.data)
+            self.total_data.append(self.checksum)
+            self.meta_data = input[128+16:]
 
     def get_complement_sum(self, one, two):
         '''
@@ -77,6 +83,24 @@ class Packet:
             curr_checksum[i] = 1 - curr_checksum[i]
         return curr_checksum
 
+    def check_checksum(self):
+        '''
+        Checks to see if packet was corrupted in transmission
+        '''
+        if not sent:
+            return None
+        chunks = list(self.total_data)
+        for i in range(len(chunks)):
+            new_chunk = ''
+            chunk = chunks[i]
+            for j in range(len(chunk)):
+                new_chunk += (chunk[j] + ' ')
+            chunks[i] = new_chunk
+        chunks = [np.array([chunk.split()]) for chunk in chunks]
+        h = np.zeros(self.chunk_size)
+        for chunk in chunks:
+            h = self.get_complement_sum(h,chunk)
+        return h == np.ones(self.chunk_size)
 #Debugging
 
 input = {1: '1000011001011110', 2: '1010110001100000', 3:'0111000100101010', 4:'1000000110110101'}
