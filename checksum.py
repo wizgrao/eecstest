@@ -12,10 +12,12 @@ class Packet:
             self.data = [input[16*i:16*(i+1)] for i in range(128//16)] #128 Bits
             self.meta_data = input[128:] #32 Bits
             self.total_data = list(self.data)
-            total_data.append(meta_data[:16])
-            total_data.append(meta_data[16:])
+            self.total_data.append(self.meta_data[:16])
+            self.total_data.append(self.meta_data[16:])
             self.checksum = self.get_checksum() #16 bits
         else:
+            self.chunk_size = 16
+            self.sent = True
             self.checksum = input[:16]
             self.data = [input[16*(i+1): 16*(i+2)] for i in range(128//16)]
             self.total_data = list(self.data)
@@ -29,13 +31,16 @@ class Packet:
         '''
         out = [0 for _ in range(self.chunk_size)]
         carry = 0
+        #print(one, two)
         one = [int(i) for i in one]
-        two = [int(i) for i in two]
+        x = list(two)
+        two = [int(i) for i in two[0]]
         #Regular bitwise addition
         for i in range(self.chunk_size):
             i = -(i+1) % self.chunk_size
             out[i] = (one[i] + two[i] + carry) % 2
             carry = max(0, (one[i] + two[i] + carry)//2)
+
         #Preprocessing for carryover
         one = list(out)
         two = bin(carry)[2:]
@@ -52,12 +57,12 @@ class Packet:
         x = [0 for _ in range(self.chunk_size - len(two))]
         x.extend(two)
         two = x
-        print(out, two)
+        #print(out, two)
         for i in range(self.chunk_size):
             i = -(i+1)%self.chunk_size
             out[i] = (one[i] + two[i] + carry) % 2
             carry = max(0, (one[i] + two[i] + carry) - 1)
-        print(out)
+        #print(out)
         return np.array(out)
 
     def get_checksum(self):
@@ -77,6 +82,11 @@ class Packet:
                 new_chunk += (chunk[j] + ' ')
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
+        print(len(chunks))
+        chunks.pop()
+        chunks.pop()
+        print(len(chunks))
+        #print(chunks)
         for chunk in chunks:
             curr_checksum = self.get_complement_sum(curr_checksum, chunk)
         for i in range(len(curr_checksum)):
@@ -87,7 +97,7 @@ class Packet:
         '''
         Checks to see if packet was corrupted in transmission
         '''
-        if not sent:
+        if not self.sent:
             return None
         chunks = list(self.total_data)
         for i in range(len(chunks)):
@@ -100,9 +110,14 @@ class Packet:
         h = np.zeros(self.chunk_size)
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
+        print(h)
         return h == np.ones(self.chunk_size)
 #Debugging
 
-input = {1: '1000011001011110', 2: '1010110001100000', 3:'0111000100101010', 4:'1000000110110101'}
+
+input = '10000110010111101010110001100000011100010010101010000001101101011000011001011110101011000110000001110001001010101000000110110101'
 a = Packet(input)
-print(a.checksum)
+c = '1011010011000001'
+
+b = Packet(c+input, sent = True)
+print(b.check_checksum())
