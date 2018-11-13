@@ -17,12 +17,13 @@ def HuffEncode(freq_dict):
             huffman[symbol] = "1" + huffman[symbol]
         heappush(freq, combined)
     return huffman,{v: k for k, v in huffman.items()}
+
 def huffman_compress(incodePath,decodePath):
      with open("sample.txt", 'r+') as file:
         text = file.read()
         text = text.rstrip()
-    codes, reverse_mapping = HuffEncode(Counter(text))
-    with open(incodePath, 'w') as encode,open(decodePath, 'w') as decode:
+     codes, reverse_mapping = HuffEncode(Counter(text))
+     with open(incodePath, 'w') as encode,open(decodePath, 'w') as decode:
         for k, v in codes.items():
             if k=='\n': k='\\n'
             encode.write(str(k) + ' ' + str(v) + '\n')
@@ -47,15 +48,14 @@ class HuffmanCode(object):
         with open(path, 'r+') as file:
             text = file.read()
             text = text.rstrip()
-            huffman_tree= text_huffman("encode1.txt")
+            huffman_tree= text_huffman("encode.txt")
             encoded=''.join([huffman_tree[c] for c in text])
         return encoded
-    def decompress(self, text):
-        file = "final_file.txt"
+    def decompress(self, text, file = "final_file.txt"):
         temp = ""
         decoded = ""
         with open(file, 'w') as output:
-            huffman_tree= text_huffman("decode1.txt",True)
+            huffman_tree= text_huffman("decode.txt",True)
             for bit in text:
                 temp += bit
                 if temp in huffman_tree:
