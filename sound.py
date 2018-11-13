@@ -109,5 +109,7 @@ bits = bitarray.bitarray('101010101010101010101010101010101010101010101010101010
 
 transmit(bits, baud=300, signal_cf=1000, clock_cf=2000, fdev=200, fs=11025, packet_size=8)
 sd.wait()
-print(receive(fs=11025, packet_size=8))
+transmit(bits, baud=300, signal_cf=1000, clock_cf=2000, fdev=200, fs=11025, packet_size=8)
+sd.wait()
+#print(receive(fs=11025, packet_size=8, duration=1))
 
