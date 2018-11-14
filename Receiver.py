@@ -31,15 +31,15 @@ class Receiver:
         :return: None
         """
         if p is not None:
-            indices = self.get_indices(p)
-            data=p[:-self.chunk_size//8]
-            packet = Packet(np.frombuffer(data,np.uint8),indices)
+            data,indices=self.seperate_indices_data(p)
+            packet = Packet(data,indices)
 
             self.received_packets.append(packet)
             for chunk_idx in indices:
                 if self.found[chunk_idx]:
                     packet.indices.remove(chunk_idx)
                     packet.data = np.bitwise_xor(packet.data, self.decoded_chunks[chunk_idx])
+                    packet.data = bytearray(''.join(map(str,packet.data)),'utf8')
             if len(indices) == 1:
                 self.peeling()
 
@@ -67,19 +67,17 @@ class Receiver:
                 if idx in packet.indices:
                     packet.indices.remove(idx)
                     packet.data = np.bitwise_xor(packet.data, self.decoded_chunks[idx])
+                    packet.data = bytearray(''.join(map(str, packet.data)), 'utf8')
 
     def blocks_write(self):
         """
         Convert decoded chunks into huffman code (byte str)
         :return: huffman code
         """
-        self.uint8_to_byte()
-        huffman_code=bytearray()
+        huffman_code=''
         for data in self.decoded_chunks:
-            pad_info = data[-1]
-            huffman_code+=data[:-pad_info]
-
-        return bytes(huffman_code)
+            huffman_code+=str(data)[str(data).find('\'')+1:-2]
+        return huffman_code
 
     def isDone(self):
         return self.chunksDone() == self.chunk_size
@@ -87,17 +85,10 @@ class Receiver:
     def chunksDone(self):
         return sum(self.found)
 
-    def uint8_to_byte(self):
-        for i in range(len(self.decoded_chunks)):
-            self.decoded_chunks[i]=bytearray(self.decoded_chunks[i])
+    def seperate_indices_data(self,p):
+        byte2str=str(p)[str(p).find('\'')+1:-2]
+        data=bytearray(byte2str[:-32],'utf8')
+        indices=byte2str[-32:]
+        return data,[pos for pos, char in enumerate(indices) if char == "1"]
 
-    def get_indices(self,packet):
-        """
-        Get indices array from decode packet
-        :param packet: packet
-        :return: indices array
-        """
-        bits=""
-        for i in range(self.chunk_size//8):
-            bits+=bin(packet[(-self.chunk_size // 8)+i])[2:].rjust(8, '0')
-        return [pos for pos, char in enumerate(bits) if char == "1"]
+
