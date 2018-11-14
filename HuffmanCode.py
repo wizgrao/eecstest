@@ -35,7 +35,7 @@ def text_huffman(path,reverse=False):
     huffman_tree = {}
     with open(path) as f:
         for line in f:
-            print(line)
+            # print(line)
             if len(line.split()) != 2: continue
             (key, val) = line.split()
             huffman_tree[key] = val
