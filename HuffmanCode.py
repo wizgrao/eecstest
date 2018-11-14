@@ -2,6 +2,7 @@ from collections import Counter
 from heapq import heappush, heappop
 
 def HuffEncode(freq_dict):
+    freq_dict['\\0'] += 1
     freq = []
     huffman = {}
     for key in freq_dict:
@@ -34,14 +35,16 @@ def text_huffman(path,reverse=False):
     huffman_tree = {}
     with open(path) as f:
         for line in f:
+            print(line)
+            if len(line.split()) != 2: continue
             (key, val) = line.split()
             huffman_tree[key] = val
     if reverse:
-        huffman_tree["10000"] = "\n"
-        huffman_tree["01"] = " "
+        huffman_tree["00100"] = "\n"
+        huffman_tree["111"] = " "
     else:
-        huffman_tree["\n"]="10000"
-        huffman_tree[" "]="01"
+        huffman_tree["\n"]="00100"
+        huffman_tree[" "]="111"
     return huffman_tree
 class HuffmanCode(object):
     def compress(self,path):
@@ -50,6 +53,7 @@ class HuffmanCode(object):
             text = text.rstrip()
             huffman_tree= text_huffman("encode.txt")
             encoded=''.join([huffman_tree[c] for c in text])
+            encoded += huffman_tree["\\0"]
         return encoded
     def decompress(self, text, file = "final_file.txt"):
         temp = ""
@@ -59,6 +63,8 @@ class HuffmanCode(object):
             for bit in text:
                 temp += bit
                 if temp in huffman_tree:
+                    if huffman_tree[temp] == "\\0":
+                        break                    
                     decoded += huffman_tree[temp]
                     temp = ""
             output.write(decoded)

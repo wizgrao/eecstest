@@ -76,8 +76,7 @@ class Receiver:
         self.uint8_to_byte()
         huffman_code=bytearray()
         for data in self.decoded_chunks:
-            pad_info = data[-1]
-            huffman_code+=data[:-pad_info]
+            huffman_code+=data
 
         return bytes(huffman_code)
 
