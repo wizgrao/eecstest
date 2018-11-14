@@ -3,7 +3,7 @@ from Transmitter import *
 from HuffmanCode import *
 
 #create huffman code
-huffman_compress("encode.txt","decode.txt")
+huffman_compress("encode1.txt","decode1.txt")
 a = HuffmanCode()
 encode=a.compress("test.txt")
 
