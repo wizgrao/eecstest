@@ -97,7 +97,7 @@ def transmit(bits, baud=1200, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000,
 
 
 def receive(packet_size=4, baud=300, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000, duration=10):
-    myrecording = sd.rec(int(5 * 11025), samplerate=11025, channels=1)
+    myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
     sd.wait()
     recording = [x[0] for x in myrecording]
     clnrz = np.array([int((x)) for x in list(nc_afsk1200Demod(recording, fs=fs, cf=clock_cf, fdev=fdev))])
