@@ -10,7 +10,7 @@ a = HuffmanCode()
 
 c = Receiver()
 
-packets = receive(packet_size=128+16+32, baud=300, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30)
+packets = receive(packet_size=8+16+8, baud=50, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30)
 
 count=0
 while not c.isDone() and count<len(packets):
@@ -18,7 +18,7 @@ while not c.isDone() and count<len(packets):
     s = ""
     for b in received:
         s+=str(b)
-    if len(s) != 128+16+32:
+    if len(s) != 8+16+8:
         count+=1
         continue
     check=Pack(s, sent=True)
