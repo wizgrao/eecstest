@@ -7,6 +7,7 @@ class Packet:
             - Last 32 bits corresponds to the metadata
 
         '''
+        self.sent=sent
         if not isinstance(input, str):
             self.input = byte2str = str(input)[str(input).find('\'') + 1:-2]
         else:
@@ -32,7 +33,7 @@ class Packet:
         return ''.join(map(str, self.checksum)) + self.input
     def get_received_packet(self):
         packet= self.input
-        return packet[17:]
+        return packet[16:]
 
     def get_complement_sum(self, one, two):
         '''
@@ -120,14 +121,14 @@ class Packet:
         h = np.zeros(self.chunk_size)
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
-        print(h)
+        #print(h)
         return all(h == np.ones(self.chunk_size))
 #Debugging
-
-
-input = '10000110010111101010110001100000011100010010101010000001101101011000011001011110101011000110000001110001001010101000000110110101'
-a = Packet(input)
-c = '1011010011000001'
-
-b = Packet(c+input, sent = True)
-print(b.check_checksum())
+#
+#
+# input = '10000110010111101010110001100000011100010010101010000001101101011000011001011110101011000110000001110001001010101000000110110101'
+# a = Packet(input)
+# c = '1011010011000001'
+#
+# b = Packet(c+input, sent = True)
+# print(b.check_checksum())
