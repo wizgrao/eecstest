@@ -28,15 +28,15 @@ def clock(num_packets, packet_len, fs=48000, fdev=200, f=800, br=1200):
     upsample = lcm([br, fs])
     rep = upsample/br
     signalLen = rep*packet_len*num_packets
-
+    
     arr = []
-
+    
     ctr = 1
     i = 0
     for j in range(int(rep/2)):
         arr += [ctr]
         i+= 1
-
+    
     ctr *=-1
     j = 0
     while i<signalLen:
@@ -71,7 +71,7 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, TBW=2.
 
     an_high_envelops = signal.hilbert(highvals)
     high_envelope = np.abs(an_high_envelops)
-
+    
     diff = low_envelope - high_envelope
     return np.sign(diff)
 
@@ -112,3 +112,4 @@ sd.wait()
 transmit(bits, baud=300, signal_cf=1000, clock_cf=2000, fdev=200, fs=11025, packet_size=8)
 sd.wait()
 #print(receive(fs=11025, packet_size=8, duration=1))
+
