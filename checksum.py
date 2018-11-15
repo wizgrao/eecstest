@@ -33,7 +33,7 @@ class Packet:
         return ''.join(map(str, self.checksum)) + self.input
     def get_received_packet(self):
         packet= self.input
-        return packet[17:]
+        return packet[16:]
 
     def get_complement_sum(self, one, two):
         '''
