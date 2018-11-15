@@ -15,6 +15,9 @@ packet = b.encode()
 final_packet=[]
 for p in packet:
     check=Packet(p)
+    # print(check.checksum)
+    # print(check.total_data)
+
     final_packet.append(check.get_final_packet())
 
 #send file
@@ -22,8 +25,10 @@ c = Receiver()
 count = 0
 while not c.isDone() and count<len(packet):
     received=final_packet[count]
-    check=Packet(received)
+    check=Packet(received, sent = True)
+    print(check.check_checksum())
     if check.check_checksum():
+
         temp=check.get_received_packet()
         temp=bytearray(temp,'utf8')
         c.receive_packet(temp)
