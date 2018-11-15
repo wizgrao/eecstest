@@ -2,7 +2,7 @@ from Receiver import *
 from Transmitter import *
 from HuffmanCode import *
 from checksum import *
-
+from sound import transmit, receive
 #create huffman code
 #huffman_compress("encode.txt","decode.txt")
 a = HuffmanCode()
