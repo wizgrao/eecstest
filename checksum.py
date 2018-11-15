@@ -7,18 +7,18 @@ class Packet:
             - Last 32 bits corresponds to the metadata
 
         '''
+        self.sent=sent
         if not isinstance(input, str):
             self.input = byte2str = str(input)[str(input).find('\'') + 1:-2]
         else:
             self.input = input
         if not sent:
             self.chunk_size = 16
-            self.data = [self.input[16*i:16*(i+1)] for i in range(128//16)] #Splits xor'd chunks into 16-bit strings
+            self.data = [self.input[16*i:16*(i+1)] for i in range(128//16)] #128 Bits
             self.meta_data = self.input[128:] #32 Bits
             self.total_data = list(self.data)
             self.total_data.append(self.meta_data[:16])
-            self.total_data.append(self.meta_data[16:])#splits meta data into 16-bit strings
-            #Splitting to facilitate checksum
+            self.total_data.append(self.meta_data[16:])
             self.checksum = self.get_checksum() #16 bits
         else:
             self.chunk_size = 16
@@ -121,14 +121,14 @@ class Packet:
         h = np.zeros(self.chunk_size)
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
-        print(h)
+        #print(h)
         return all(h == np.ones(self.chunk_size))
 #Debugging
-
-
-input = '10000110010111101010110001100000011100010010101010000001101101011000011001011110101011000110000001110001001010101000000110110101'
-a = Packet(input)
-c = '1011010011000001'
-
-b = Packet(c+input, sent = True)
-print(b.check_checksum())
+#
+#
+# input = '10000110010111101010110001100000011100010010101010000001101101011000011001011110101011000110000001110001001010101000000110110101'
+# a = Packet(input)
+# c = '1011010011000001'
+#
+# b = Packet(c+input, sent = True)
+# print(b.check_checksum())
