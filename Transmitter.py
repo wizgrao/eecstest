@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Transmitter:
-    def __init__(self,code,chunk_size=64):
+    def __init__(self,code,chunk_size=32):
         self.code=code
         self.chunk_size=chunk_size
         self.chunks = self.blocks_read(self.code)
@@ -19,7 +19,7 @@ class Transmitter:
         """
         a=False
         chunks = []
-        data_size= 64
+        data_size= 128
         assert data_size*self.chunk_size > len(huffman_code)
         huffman_code += "0"*(data_size*self.chunk_size - len(huffman_code))
         for i in range(self.chunk_size):
