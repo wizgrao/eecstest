@@ -10,7 +10,7 @@ a = HuffmanCode()
 
 c = Receiver()
 
-packets = receive(packet_size=128+16+32, baud=300, signal_cf=800, clock_cf=1400, fdev=300, fs=11025, duration=30)
+packets = receive(packet_size=128+16+32, baud=300, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30)
 
 count=0
 while not c.isDone() and count<len(packets):

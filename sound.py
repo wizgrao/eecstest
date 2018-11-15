@@ -59,8 +59,8 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, TBW=2.
     lowf2 = sf + 50
     highf1 = mf - 50
     highf2 = mf + 50
-    lowpass = signal.firwin(30, [2*lowf1/fs, 2*lowf2/fs], pass_zero=False)
-    highpass = signal.firwin(30, [2*highf1/fs, 2*highf2/fs], pass_zero=False)
+    lowpass = signal.firwin(50, [2*lowf1/fs, 2*lowf2/fs], pass_zero=False)
+    highpass = signal.firwin(50, [2*highf1/fs, 2*highf2/fs], pass_zero=False)
 
     lowvals = signal.convolve(sig, lowpass, mode='same')
 

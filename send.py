@@ -26,6 +26,6 @@ for p in final_packet:
     bits += p
 
 print("sending")
-transmit(bitarray(bits), baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=11025, packet_size=128+16+32)
+transmit(bitarray(bits), baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, packet_size=128+16+32)
 
 sd.wait()
