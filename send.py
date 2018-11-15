@@ -1,8 +1,11 @@
 from Receiver import *
+from checksum import Packet as Pack
 from Transmitter import *
 from HuffmanCode import *
 from sound import transmit, receive
 from bitarray import bitarray
+import sounddevice as sd
+
 a = HuffmanCode()
 encode=a.compress("test.txt")
 
@@ -11,7 +14,7 @@ chunks=b.chunks
 packet = b.encode()
 final_packet=[]
 for p in packet:
-    check=Packet(p)
+    check=Pack(p)
     # print(check.checksum)
     # print(check.total_data)
 
@@ -20,9 +23,9 @@ for p in packet:
 #
 bits = ""
 for p in final_packet:
-    bits += p.decode('utf8')
+    bits += p
 
-
+print("sending")
 transmit(bitarray(bits), baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=11025, packet_size=128+16+32)
 
 sd.wait()
