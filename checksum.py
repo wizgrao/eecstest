@@ -14,11 +14,12 @@ class Packet:
             self.input = input
         if not sent:
             self.chunk_size = 16
-            self.data = [self.input[16*i:16*(i+1)] for i in range(128//16)] #128 Bits
+            self.data = [self.input[16*i:16*(i+1)] for i in range(128//16)] #Splits xor'd chunks into 16-bit strings
             self.meta_data = self.input[128:] #32 Bits
             self.total_data = list(self.data)
             self.total_data.append(self.meta_data[:16])
-            self.total_data.append(self.meta_data[16:])
+            self.total_data.append(self.meta_data[16:])#splits meta data into 16-bit strings
+            #Splitting to facilitate checksum
             self.checksum = self.get_checksum() #16 bits
         else:
             self.chunk_size = 16
