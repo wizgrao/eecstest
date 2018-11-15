@@ -93,10 +93,10 @@ class Packet:
                 new_chunk += (chunk[j] + ' ')
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
-        print(len(chunks))
+        #print(len(chunks))
         chunks.pop()
         chunks.pop()
-        print(len(chunks))
+        #print(len(chunks))
         #print(chunks)
         for chunk in chunks:
             curr_checksum = self.get_complement_sum(curr_checksum, chunk)
