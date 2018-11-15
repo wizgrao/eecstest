@@ -8,7 +8,7 @@ class Packet:
 
 class Receiver:
 
-    def __init__(self, chunk_size=64):
+    def __init__(self, chunk_size=32):
         self.received_packets = []
         self.chunk_size = chunk_size
         self.decoded_chunks = [0] * self.chunk_size
@@ -87,8 +87,8 @@ class Receiver:
 
     def seperate_indices_data(self,p):
         byte2str=str(p)[str(p).find('\'')+1:-2]
-        data=bytearray(byte2str[:-self.chunk_size],'utf8')
-        indices=byte2str[-self.chunk_size:]
+        data=bytearray(byte2str[:-32],'utf8')
+        indices=byte2str[-32:]
         return data,[pos for pos, char in enumerate(indices) if char == "1"]
 
 
