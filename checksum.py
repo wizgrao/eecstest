@@ -13,27 +13,29 @@ class Packet:
         else:
             self.input = input
         if not sent:
-            self.chunk_size = 16
-            self.data = [self.input[16*i:16*(i+1)] for i in range(128//16)] #128 Bits
-            self.meta_data = self.input[128:] #32 Bits
+            self.packet_size = 16
+            self.chunk_size = 8
+            self.data = [self.input[self.chunk_size*i:self.chunk_size*(i+1)] for i in range(self.packet_size//self.chunk_size)] #128 Bits
+            self.meta_data = self.input[self.packet_size:] #32 Bits
             self.total_data = list(self.data)
-            self.total_data.append(self.meta_data[:16])
-            self.total_data.append(self.meta_data[16:])
+            self.total_data.append(self.meta_data[:self.chunk_size])
+            self.total_data.append(self.meta_data[self.chunk_size:])
             self.checksum = self.get_checksum() #16 bits
         else:
-            self.chunk_size = 16
+            self.packet_size = 16
+            self.chunk_size = 8
             self.sent = True
-            self.checksum = self.input[:16]
-            self.data = [self.input[16*(i+1): 16*(i+2)] for i in range(128//16)]
+            self.checksum = self.input[:self.chunk_size]
+            self.data = [self.input[self.packet_size*(i+1): self.packet_size*(i+2)] for i in range(self.packet_size//self.chunk_size)]
             self.total_data = list(self.data)
             self.total_data.append(self.checksum)
-            self.meta_data = self.input[128+16:]
+            self.meta_data = self.input[self.packet_size + self.chunk_size:]
 
     def get_final_packet(self):
         return ''.join(map(str, self.checksum)) + self.input
     def get_received_packet(self):
         packet= self.input
-        return packet[16:]
+        return packet[self.chunk_size:]
 
     def get_complement_sum(self, one, two):
         '''
