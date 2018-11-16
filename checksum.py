@@ -124,7 +124,7 @@ class Packet:
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
         #print(h)
-        print(h)
+        #print(h)
         return all(h == np.ones(self.chunk_size))
 #Debugging
 #
