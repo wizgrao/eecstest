@@ -25,7 +25,7 @@ class Packet:
             self.chunk_size = 8
             self.sent = True
             self.checksum = self.input[:self.chunk_size]
-            self.data = [self.input[self.packet_size*(i+1): self.packet_size*(i+2)] for i in range(self.packet_size//self.chunk_size)]
+            self.data = [self.input[self.chunk_size*(i+1): self.chunk_size*(i+2)] for i in range(self.packet_size//self.chunk_size)]
             self.total_data = list(self.data)
             self.total_data.append(self.checksum)
             self.meta_data = self.input[self.packet_size + self.chunk_size:]

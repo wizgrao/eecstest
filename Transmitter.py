@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Transmitter:
-    def __init__(self,code,chunk_size=32):
+    def __init__(self,code,chunk_size=256):
         self.code=code
         self.chunk_size=chunk_size
         self.chunks = self.blocks_read(self.code)
@@ -19,7 +19,7 @@ class Transmitter:
         """
         a=False
         chunks = []
-        data_size= 128
+        data_size= 16
         assert data_size*self.chunk_size > len(huffman_code)
         huffman_code += "0"*(data_size*self.chunk_size - len(huffman_code))
         for i in range(self.chunk_size):
@@ -36,18 +36,12 @@ class Transmitter:
 j       :return: packets
         """
         packets=[]
-        degree = robust_distribution(self.chunk_size,repeat_num)
         for i in range(repeat_num*self.chunk_size):
-            chunk_indices = random.sample(range(self.chunk_size),degree[i])
-            encoded_text = self.chunks[chunk_indices[0]].copy()
-            for j in range(1, degree[i]):
-                encoded_text = np.bitwise_xor(encoded_text, self.chunks[chunk_indices[j]])
-                encoded_text = bytearray(''.join(map(str,encoded_text)),'utf8')
-            #  adding indices
-            indices=[0]*self.chunk_size
             indices_str=""
-            for n in range(degree[i]): indices[chunk_indices[n]]= 1
-            for k in range(self.chunk_size):indices_str+="1" if indices[k]==1 else "0"
-            encoded_text+= bytearray(indices_str,'utf8')
+            j = i%self.chunk_size
+            encoded_text = self.chunks[j].copy()
+            jstr = np.base_repr(j)
+            jstr = ('0'*(8) + jstr)[-8:]
+            encoded_text += bytearray(jstr,'utf8')
             packets.append(encoded_text)
         return packets
