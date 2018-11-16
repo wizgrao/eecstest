@@ -25,6 +25,7 @@ c = Receiver()
 count = 0
 while not c.isDone() and count<len(packet):
     received=final_packet[count]
+    print(received)
     check=Packet(received, sent = True)
     print(check.check_checksum())
     if check.check_checksum():

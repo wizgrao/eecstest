@@ -35,12 +35,8 @@ class Receiver:
             packet = Packet(data,idx)
 
             self.received_packets.append(packet)
-            if self.found[idx]:
-                packet.indices.remove(idx)
-                packet.data = np.bitwise_xor(packet.data, self.decoded_chunks[idx])
-                packet.data = bytearray(''.join(map(str,packet.data)),'utf8')
-            if len(indices) == 1:
-                self.peeling()
+            self.found[idx] = True
+            self.decoded_chunks[idx] = packet.data
 
     def peeling(self):
         """
@@ -49,23 +45,11 @@ class Receiver:
         """
         flag = True
         idx = 0
-        while flag:
-            flag = False
-            for packet in self.received_packets:
-                flag = True
-                idx = packet.indices
-                break
 
             # First, declare the identified chunk
-            if not self.found[idx]:
-                self.decoded_chunks[idx] = packet.data
-                self.found[idx] = True
-            # Second, peel it off from others
-            for packet in self.received_packets:
-                if idx in packet.indices:
-                    packet.indices.remove(idx)
-                    packet.data = np.bitwise_xor(packet.data, self.decoded_chunks[idx])
-                    packet.data = bytearray(''.join(map(str, packet.data)), 'utf8')
+        if not self.found[idx]:
+            self.decoded_chunks[idx] = packet.data
+            self.found[idx] = True
 
     def blocks_write(self):
         """
