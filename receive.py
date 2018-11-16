@@ -19,6 +19,7 @@ while not c.isDone() and count<len(packets):
     for b in received:
         s+=str(b)
     if len(s) != 8+16+8:
+        print('wrong number of bits')
         count+=1
         continue
     check=Pack(s, sent=True)
@@ -27,6 +28,8 @@ while not c.isDone() and count<len(packets):
         temp=check.get_received_packet()
         temp=bytearray(temp, 'utf8')
         c.receive_packet(temp)
+    else:
+        print('corrupted')
     count+=1
 de=c.decoded_chunks
 
