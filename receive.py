@@ -9,13 +9,8 @@ a = HuffmanCode()
 
 
 c = Receiver()
-<<<<<<< fd5341849517fd56db1ad13e2d1cbb536fc46196
 
-packets = receive(packet_size=8+16+8, baud=50, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30)
-=======
-kjk
-packets = receive(packet_size=128+16+32, baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30)
->>>>>>> smaller chunk size
+packets = receive(packet_size=8+16+8, baud=50, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30, taps=50, width = 100)
 
 count=0
 while not c.isDone() and count<len(packets):
