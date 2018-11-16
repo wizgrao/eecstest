@@ -29,6 +29,7 @@ class Packet:
             self.total_data = list(self.data)
             self.total_data.append(self.checksum)
             self.meta_data = self.input[self.packet_size + self.chunk_size:]
+            self.total_data.append(self.meta_data)
 
     def get_final_packet(self):
         return ''.join(map(str, self.checksum)) + self.input
@@ -123,6 +124,7 @@ class Packet:
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
         #print(h)
+        print(h)
         return all(h == np.ones(self.chunk_size))
 #Debugging
 #
