@@ -95,7 +95,7 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         #print(len(chunks))
-        chunks.pop()
+        #print(chunks.pop())
         #print(chunks.pop())
         #print(len(chunks))
         #print(chunks)
