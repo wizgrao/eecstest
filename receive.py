@@ -10,7 +10,7 @@ a = HuffmanCode()
 
 c = Receiver()
 
-packets = receive(packet_size=8+16+8, baud=50, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30, taps=50, width = 100)
+packets = receive(packet_size=8+16+8, baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30, taps=50, width = 100)
 
 count=0
 while not c.isDone() and count<len(packets):
@@ -24,9 +24,9 @@ while not c.isDone() and count<len(packets):
         continue
     check=Pack(s, sent=True)
     if check.check_checksum():
-        print("received packet")
         temp=check.get_received_packet()
         temp=bytearray(temp, 'utf8')
+        print("received", temp)
         c.receive_packet(temp)
     else:
         print('corrupted')
