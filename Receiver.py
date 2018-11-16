@@ -8,7 +8,7 @@ class Packet:
 
 class Receiver:
 
-    def __init__(self, chunk_size=32):
+    def __init__(self, chunk_size=256):
         self.received_packets = []
         self.chunk_size = chunk_size
         self.decoded_chunks = [0] * self.chunk_size
@@ -31,15 +31,14 @@ class Receiver:
         :return: None
         """
         if p is not None:
-            data,indices=self.seperate_indices_data(p)
-            packet = Packet(data,indices)
+            data,idx=self.seperate_indices_data(p)
+            packet = Packet(data,idx)
 
             self.received_packets.append(packet)
-            for chunk_idx in indices:
-                if self.found[chunk_idx]:
-                    packet.indices.remove(chunk_idx)
-                    packet.data = np.bitwise_xor(packet.data, self.decoded_chunks[chunk_idx])
-                    packet.data = bytearray(''.join(map(str,packet.data)),'utf8')
+            if self.found[idx]:
+                packet.indices.remove(idx)
+                packet.data = np.bitwise_xor(packet.data, self.decoded_chunks[idx])
+                packet.data = bytearray(''.join(map(str,packet.data)),'utf8')
             if len(indices) == 1:
                 self.peeling()
 
@@ -53,10 +52,9 @@ class Receiver:
         while flag:
             flag = False
             for packet in self.received_packets:
-                if len(packet.indices) == 1:  # Found a singleton
-                    flag = True
-                    idx = packet.indices[0]
-                    break
+                flag = True
+                idx = packet.indices
+                break
 
             # First, declare the identified chunk
             if not self.found[idx]:
@@ -87,8 +85,8 @@ class Receiver:
 
     def seperate_indices_data(self,p):
         byte2str=str(p)[str(p).find('\'')+1:-2]
-        data=bytearray(byte2str[:-32],'utf8')
-        indices=byte2str[-32:]
-        return data,[pos for pos, char in enumerate(indices) if char == "1"]
+        data=bytearray(byte2str[:-8],'utf8')
+        indices=byte2str[-8:]
+        return data,int(indices,2)
 
 
