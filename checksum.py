@@ -5,7 +5,6 @@ class Packet:
         '''
         input = String input of bits, length 128 + 32 representing xor of packets
             - Last 32 bits corresponds to the metadata
-
         '''
         self.sent=sent
         if not isinstance(input, str):
@@ -19,7 +18,7 @@ class Packet:
             self.meta_data = self.input[self.packet_size:] #32 Bits
             self.total_data = list(self.data)
             self.total_data.append(self.meta_data[:self.chunk_size])
-            self.total_data.append(self.meta_data[self.chunk_size:])
+            #self.total_data.append(self.meta_data[self.chunk_size:])
             self.checksum = self.get_checksum() #16 bits
         else:
             self.packet_size = 16
@@ -97,7 +96,7 @@ class Packet:
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         #print(len(chunks))
         chunks.pop()
-        chunks.pop()
+        #print(chunks.pop())
         #print(len(chunks))
         #print(chunks)
         for chunk in chunks:
