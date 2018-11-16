@@ -23,7 +23,7 @@ for p in packet:
 #
 bits = ""
 for p in final_packet:
-#    print(p)
+    print(p)
     bits += p
 
 print("sending")
