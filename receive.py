@@ -5,12 +5,13 @@ from checksum import *
 from sound import transmit, receive
 from bitarray import bitarray
 from checksum import Packet as Pack
+import values
 a = HuffmanCode()
 
 
 c = Receiver()
 
-packets = receive(packet_size=8+16+8, baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, duration=30, taps=50, width = 100)
+packets = receive(packet_size=8+16+8, baud=values.baud, signal_cf=values.sig_cf, clock_cf=values.clock_cf, fdev=values.delta, fs=values.fs, duration=30, taps=50, width = 200)
 
 count=0
 while not c.isDone() and count<len(packets):

@@ -5,7 +5,7 @@ from HuffmanCode import *
 from sound import transmit, receive
 from bitarray import bitarray
 import sounddevice as sd
-
+import values
 a = HuffmanCode()
 encode=a.compress("test.txt")
 
@@ -27,6 +27,6 @@ for p in final_packet:
     bits += p
 
 print("sending")
-transmit(bitarray(bits), baud=200, signal_cf=800, clock_cf=1400, fdev=300, fs=48000, packet_size=32)
+transmit(bitarray(bits), baud=values.baud, signal_cf=values.sig_cf, clock_cf=values.clock_cf, fdev=values.delta, fs=values.fs, packet_size=32)
 
 sd.wait()
