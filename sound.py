@@ -18,14 +18,18 @@ def afsk1200(bits, fs = 48000, fdev=500, f=1700, br=1200):
         downsample = np.array(list(s)[::round(upsample/fs)])
         return downsample
 
-def manchester(bits, fs=4800, br=200):
+def manchester(bits, fs=48000, br=200):
         b = np.fromstring(bits.unpack(), dtype=bool)
         upsample = lcm([br, fs])
         c = np.array([1  if a else -1 for a in list(b)])
-        c = np.array([1,-1]*upsample*2 + [1,1,1] + list(c))
+        print(len(c), upsample)
+        c = np.array([1,-1]*int(br)*2 + [1,1,1] + list(c))
         rep = upsample/br
         arr = []
+        print(len(c))
+        ctr = 0
         for bit in list(c):
+            ctr +=1
             for i in range(int(rep)):
                 if i < rep/2:
                     arr += [-bit]
@@ -90,13 +94,15 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=
     lowvals = signal.convolve(sig, lowpass, mode='same')
 
     highvals = signal.convolve(sig, highpass, mode='same')
-
+    print("hilberting", len(lowvals))
     an_low_envelops = signal.hilbert(lowvals)
     low_envelope = np.abs(an_low_envelops)
 
+    print("more hilberting")
     an_high_envelops = signal.hilbert(highvals)
+    
     high_envelope = np.abs(an_high_envelops)
-
+    
     diff = low_envelope - high_envelope
     return np.sign(diff)
 

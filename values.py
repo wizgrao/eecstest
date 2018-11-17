@@ -1,6 +1,6 @@
-fs=48000
-sig_cf=5000
-clock_cf=2000
-delta=600
-baud=200
+fs=11025
+sig_cf=1700
+clock_cf=1
+delta=500
+baud=400
 

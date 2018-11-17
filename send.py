@@ -15,9 +15,6 @@ packet = b.encode()
 final_packet=[]
 for p in packet:
     check=Pack(p)
-    # print(check.checksum)
-    # print(check.total_data)
-
     final_packet.append(check.get_final_packet())
 
 bits = ""
