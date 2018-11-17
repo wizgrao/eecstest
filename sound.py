@@ -14,6 +14,7 @@ def afsk1200(bits, fs = 48000, fdev=500, f=1700, br=1200):
         arr = manchester(bits, fs, br)
         upsample = lcm([br, fs])
         m = np.array(arr)
+        print(f+fdev, f-fdev)
         s = np.cos(np.array([2*math.pi*f*i/upsample - 2*math.pi*fdev*y for y, i in zip(integrate.cumtrapz(m, dx=1/upsample), range(len(m)))]))
         downsample = np.array(list(s)[::round(upsample/fs)])
         return downsample
@@ -90,11 +91,9 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=
     highf2 = mf + width
     lowpass = signal.firwin(taps, [2*lowf1/fs, 2*lowf2/fs], pass_zero=False)
     highpass = signal.firwin(taps, [2*highf1/fs, 2*highf2/fs], pass_zero=False)
-
     lowvals = signal.convolve(sig, lowpass, mode='same')
-
     highvals = signal.convolve(sig, highpass, mode='same')
-    print("hilberting", len(lowvals))
+    print("hilberting", len(lowvals), mf, sf)
     an_low_envelops = signal.hilbert(lowvals)
     low_envelope = np.abs(an_low_envelops)
 
@@ -139,5 +138,4 @@ def receive(packet_size=4, baud=300, signal_cf=1000, clock_cf=2000, fdev=500, fs
     plt.figure()
     plt.plot(recording[:900])
     plt.show()
-    print(recording)
     return receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration, width, taps)
