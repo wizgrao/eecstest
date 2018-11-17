@@ -23,6 +23,7 @@ for p in packet:
 #send file
 c = Receiver()
 count = 0
+packet == packet[::-1]
 while not c.isDone() and count<len(packet):
     received=final_packet[count]
     print(received)
