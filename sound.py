@@ -103,7 +103,7 @@ def transmit(bits, baud=1200, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000,
 
 def receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration, width, taps):
     clnrz = np.array([int((x)) for x in list(nc_afsk1200Demod(recording, fs=fs, cf=clock_cf, fdev=fdev, width=width, taps=taps))])
-    nrz = np.array([int((x)) for x in list(nc_afsk1200Demod(recording, fs=fs, cf=signal_cf, fdev=fdev, width=width, taps=taps)])
+    nrz = np.array([int((x)) for x in list(nc_afsk1200Demod(recording, fs=fs, cf=signal_cf, fdev=fdev, width=width, taps=taps))])
     return decode(nrz, clnrz, fs=fs, baud=baud, packet_size=packet_size)
 
 def receive(packet_size=4, baud=300, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000, duration=10, width=50, taps=50):
