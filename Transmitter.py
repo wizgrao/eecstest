@@ -28,7 +28,7 @@ class Transmitter:
         # add extra padding
         return chunks
 
-    def encode(self,repeat_num=10):
+    def encode(self,repeat_num = 1):
         """
         Combine chunks into packet based on LT code
         packet structure: chunks data + indices (equals chunk_size//8 bytes)
