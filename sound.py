@@ -21,7 +21,7 @@ def afsk1200(bits, fs = 48000, fdev=500, f=1700, br=1200):
 def manchester(bits, fs=48000, br=200):
         b = np.fromstring(bits.unpack(), dtype=bool)
         upsample = lcm([br, fs])
-        c = np.array([1  if a else -1 for a in list(b)])
+        c = np.array([1  if a else -1 for a in list(b)]*5)
         print(len(c), upsample)
         c = np.array([1,-1]*int(br)*2 + [1,1,1] + list(c))
         rep = upsample/br
@@ -102,7 +102,10 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=
     an_high_envelops = signal.hilbert(highvals)
     
     high_envelope = np.abs(an_high_envelops)
-    
+    plt.figure()
+    plt.plot(low_envelope[:900])
+    plt.plot(high_envelope[:900])
+    plt.show()
     diff = low_envelope - high_envelope
     return np.sign(diff)
 
@@ -131,5 +134,10 @@ def receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, f
 def receive(packet_size=4, baud=300, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000, duration=10, width=50, taps=50):
     myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
     sd.wait()
+    
     recording = [x[0] for x in myrecording]
+    plt.figure()
+    plt.plot(recording[:900])
+    plt.show()
+    print(recording)
     return receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration, width, taps)
