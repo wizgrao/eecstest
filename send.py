@@ -20,7 +20,6 @@ for p in packet:
 
     final_packet.append(check.get_final_packet())
 
-#
 bits = ""
 for p in final_packet:
     print(p)
