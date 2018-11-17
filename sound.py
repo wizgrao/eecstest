@@ -22,7 +22,7 @@ def manchester(bits, fs=4800, br=200):
         b = np.fromstring(bits.unpack(), dtype=bool)
         upsample = lcm([br, fs])
         c = np.array([1  if a else -1 for a in list(b)])
-        c = np.array([1,-1]*br + [1,1,1] + list(c))
+        c = np.array([1,-1]*upsample*2 + [1,1,1] + list(c))
         rep = upsample/br
         arr = []
         for bit in list(c):
