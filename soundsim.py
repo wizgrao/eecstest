@@ -5,7 +5,7 @@ from Transmitter import *
 from HuffmanCode import *
 from bitarray import bitarray
 import sounddevice as sd
-
+import values
 sample = 500
 a = HuffmanCode()
 encode=a.compress("test.txt")
@@ -21,7 +21,8 @@ bits = ""
 for p in final_packet:
         bits += p
 
-sig = genSignal(bitarray(bits), baud=200, signal_cf=5000, clock_cf=2000, fdev=600, fs=48000, packet_size=128+16+32)
+sig = genSignal(bitarray(bits), baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs)
+print(len(sig))
 print("done creating signal")
 from Receiver import *
 from Transmitter import *
@@ -35,7 +36,7 @@ a = HuffmanCode()
 
 c = Receiver()
 print("started decoding")
-packets = receiveFromSignal(sig, packet_size=8+16+8, baud=200, signal_cf=5000, clock_cf=2000, fdev=600, fs=48000, duration=30, taps=50, width = 100)
+packets = receiveFromSignal(sig, packet_size=8+16+8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, duration=30, taps=values.taps, width = 100)
 print(packets)
 count=0
 acc = 0

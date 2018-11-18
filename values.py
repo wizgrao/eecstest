@@ -1,6 +1,6 @@
 fs=48000
-sig_cf=5000
-clock_cf=2000
-delta=600
-baud=200
-
+sig_cf=1700
+clock_cf=1700
+delta=500
+baud=600
+taps = 50 if fs==48000 else 15

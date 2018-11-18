@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import bitarray, time
-from scipy import signal, integrate
+from scipy import signal, integrate, fftpack
 from fractions import gcd
 from functools import reduce
 import sounddevice as sd
@@ -78,6 +78,8 @@ def decode(nrz, baud=1200, fs=48000):
             return bits[i:]
     
 def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=50, taps=50):
+    plt.figure()
+    plt.plot(sig[:900])
     sf = cf  - fdev
     mf = cf + fdev
     lowf1 = sf - width
@@ -90,28 +92,30 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=
     lowvals = signal.convolve(sig, lowpass, mode='same')
 
     highvals = signal.convolve(sig, highpass, mode='same')
-
-    an_low_envelops = signal.hilbert(lowvals)
+    hilbert3 = lambda x: signal.hilbert(x, fftpack.next_fast_len(len(x)))[:len(x)]
+    an_low_envelops = hilbert3(lowvals)
     low_envelope = np.abs(an_low_envelops)
 
-    an_high_envelops = signal.hilbert(highvals)
+    an_high_envelops = hilbert3(highvals)
     high_envelope = np.abs(an_high_envelops)
-
+    plt.plot(low_envelope[:900])
+    plt.plot(high_envelope[:900])
+    plt.show()
     diff = low_envelope - high_envelope
     return np.sign(diff)
 
 
-def genSignal(bits, baud, signal_cf, clock_cf, fdev, fs, packet_size):
+def genSignal(bits, baud, signal_cf, fdev, fs):
     signal = afsk1200(bits, fs=fs, fdev=fdev, f=signal_cf, br=baud)
     return signal
 
-def transmit(bits, baud=1200, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000, packet_size=4):
+def transmit(bits, baud=1200, signal_cf=1000, fdev=500, fs=48000):
     modulated = genSignal(bits, baud, signal_cf, clock_cf, fdev, fs, packet_size)
     while True:
         sd.play(modulated, fs)
         sd.wait()
 
-def receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration, width, taps):
+def receiveFromSignal(recording, packet_size, baud, signal_cf, fdev, fs, duration, width, taps):
     nrz = np.array([int((x)) for x in list(nc_afsk1200Demod(recording, fs=fs, cf=signal_cf, fdev=fdev, width=width, taps=taps))])
     print("decoding")
     dec = decode(nrz, fs=fs, baud=baud)
