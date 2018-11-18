@@ -22,7 +22,7 @@ def manchester(bits, fs=4800, br=200):
         b = np.fromstring(bits.unpack(), dtype=bool)
         upsample = lcm([br, fs])
         c = np.array([1  if a else -1 for a in list(b)])
-        c = np.array([1,-1]*br + [1,1,1] + list(c))
+        c = np.array([1,-1]*br*3 + [1,1,1] + list(c))
         rep = upsample/br
         arr = []
         for bit in list(c):
@@ -38,7 +38,7 @@ def decode(nrz, baud=1200, fs=48000):
     maxOffInd = 0
     for offset in range(int(fs/baud)):
         diff = 0
-        for i in range(5):
+        for i in range(100):
             avga = 0
             avgb = 0
             for j in range(int(fs/baud/2)):
