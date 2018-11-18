@@ -33,7 +33,7 @@ bits=''
 packet_size=3*8
 
 for p in packet:
-    bits+=solo_encode(packet[0], packet_size)
+    bits+=solo_encode(p, packet_size)
 
 
 
