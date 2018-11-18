@@ -22,7 +22,7 @@ def manchester(bits, fs=4800, br=200):
         b = np.fromstring(bits.unpack(), dtype=bool)
         upsample = lcm([br, fs])
         c = np.array([1  if a else -1 for a in list(b)])
-        c = np.array([1,-1]*br*3 + [1,1,1] + list(c))
+        c = np.array([1,-1]*br*3 + [1]*20 + list(c))
         rep = upsample/br
         arr = []
         for bit in list(c):
@@ -74,12 +74,13 @@ def decode(nrz, baud=1200, fs=48000):
             prev +=1
         else:
             prev = 0
-        if prev >=3:
+        if prev >=20:
             return bits[i:]
     
 def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=50, taps=50):
     plt.figure()
-    plt.plot(sig[:900])
+    mid = int(len(sig)/2)
+    plt.plot(sig[mid:mid+1800])
     sf = cf  - fdev
     mf = cf + fdev
     lowf1 = sf - width
@@ -98,8 +99,8 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=
 
     an_high_envelops = hilbert3(highvals)
     high_envelope = np.abs(an_high_envelops)
-    plt.plot(low_envelope[:900])
-    plt.plot(high_envelope[:900])
+    plt.plot(low_envelope[mid:mid+1800])
+    plt.plot(high_envelope[mid:mid+1800])
     plt.show()
     diff = low_envelope - high_envelope
     return np.sign(diff)

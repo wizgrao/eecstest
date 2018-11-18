@@ -1,5 +1,5 @@
 fs=48000
-sig_cf=1000
-delta=300
-baud=150
-taps = 60 if fs==48000 else 15
+sig_cf=1300
+delta=480
+baud=100
+taps = 70 if fs==48000 else 15
