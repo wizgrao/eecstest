@@ -110,12 +110,12 @@ def genSignal(bits, baud, signal_cf, fdev, fs):
     return signal
 
 def transmit(bits, baud=1200, signal_cf=1000, fdev=500, fs=48000):
-    modulated = genSignal(bits, baud, signal_cf, clock_cf, fdev, fs, packet_size)
+    modulated = genSignal(bits, baud, signal_cf, fdev, fs)
     while True:
         sd.play(modulated, fs)
         sd.wait()
 
-def receiveFromSignal(recording, packet_size, baud, signal_cf, fdev, fs, duration, width, taps):
+def receiveFromSignal(recording, packet_size, baud, signal_cf, fdev, fs, width, taps):
     nrz = np.array([int((x)) for x in list(nc_afsk1200Demod(recording, fs=fs, cf=signal_cf, fdev=fdev, width=width, taps=taps))])
     print("decoding")
     dec = decode(nrz, fs=fs, baud=baud)
@@ -130,4 +130,4 @@ def receive(packet_size=4, baud=300, signal_cf=1000, clock_cf=2000, fdev=500, fs
     myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
     sd.wait()
     recording = [x[0] for x in myrecording]
-    return receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration, width, taps)
+    return receiveFromSignal(recording, packet_size, baud, signal_cf, fdev, fs, width, taps)

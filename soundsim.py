@@ -36,7 +36,7 @@ a = HuffmanCode()
 
 c = Receiver()
 print("started decoding")
-packets = receiveFromSignal(sig, packet_size=8+16+8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, duration=30, taps=values.taps, width = 100)
+packets = receiveFromSignal(sig, packet_size=8+16+8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, taps=values.taps, width = 100)
 print(packets)
 count=0
 acc = 0
