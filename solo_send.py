@@ -7,7 +7,7 @@ import sounddevice as sd
 import values
 
 
-def solo_encode(packet,size,error=4):
+def solo_encode(packet,size,error=6):
     if not isinstance(packet, str):
         packet = str(packet)[str(packet).find('\'') + 1:-2]
     i = 0
