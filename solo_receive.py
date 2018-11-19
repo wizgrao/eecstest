@@ -8,7 +8,7 @@ import values
 a = HuffmanCode()
 c = Receiver()
 
-def solo_decode(packet,size,error=4):
+def solo_decode(packet,size,error=6):
     i = 0
     bits = ''
     solomon = rs.RSCodec(error)
@@ -26,7 +26,7 @@ def solo_decode(packet,size,error=4):
         return -1
 
 
-packets = receive(packet_size=7*8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, duration=120, taps=values.taps, width = 100)
+packets = receive(packet_size=9*8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, duration=120, taps=values.taps, width = 100)
 
 count=0
 while not c.isDone() and count<len(packets):
@@ -34,11 +34,11 @@ while not c.isDone() and count<len(packets):
     s = ""
     for b in received:
         s+=str(b)
-    if len(s) != 7*8:
+    if len(s) != 9*8:
         print('wrong number of bits')
         count+=1
         continue
-    temp=solo_decode(s,7*8)
+    temp=solo_decode(s,9*8)
     if temp != -1:
         temp = bytearray(temp, 'utf8')
         print("received", temp)
